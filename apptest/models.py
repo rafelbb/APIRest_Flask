@@ -11,13 +11,12 @@ class User(db.Model):
     name = db.Column(db.String(50))
     password = db.Column(db.String(80))
     admin = db.Column(db.Boolean)
-    #todos = db.relationship('Tdod', backref='owner', lazy="dynamic")
+    todos = db.relationship('Todo')
 
 class Todo(db.Model):
     __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(50))
     complete = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer)
-    #user_id = db.Column(db.Integer, db.Foreignkey('id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
