@@ -13,3 +13,4 @@ naming_convention = {
 }
 
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
+#db = SQLAlchemy()
