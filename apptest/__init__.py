@@ -18,8 +18,8 @@ def create_app(settings_module):
 	# 
 	db.init_app(app)
 
-	#migrate.init_app(app, db, render_as_batch=True)
-	migrate.init_app(app, db, render_as_batch=True) # solo para sqlite que no puede gestionar correctamente los ALTER...
+	#migrate.init_app(app, db)
+	migrate.init_app(app, db, render_as_batch=True) # sqlite no puede gestionar correctamente los ALTER, por lo que borramos todo y volvemos a crear (render_as_batch)
 	
 	
 	# Registro de los Blueprints

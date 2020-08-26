@@ -195,6 +195,7 @@ def promote_user(current_user, public_id):
 
 @user_bp.route('/user/<public_id>', methods=['DELETE'])
 @token_required
+#@admin_required
 def delete_user(current_user, public_id):
 
     logger.info('Eliminamos el usuario indicado')

@@ -5,7 +5,7 @@ from .extensions import db
 
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'tbl_users'
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50))
@@ -14,9 +14,15 @@ class User(db.Model):
     todos = db.relationship('Todo')
 
 class Todo(db.Model):
-    __tablename__ = 'todo'
+    __tablename__ = 'tbl_todos'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(50))
     complete = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('tbl_users.id'))
+
+# TODO: Existirá una relación N-M entre User y Roles
+class Rol(db.Model):
+    __tablename__ = "tbl_roles"
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(20))
 

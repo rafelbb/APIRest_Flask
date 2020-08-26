@@ -1,5 +1,4 @@
 # config/dev.py
-
 from .default import *
 
 
