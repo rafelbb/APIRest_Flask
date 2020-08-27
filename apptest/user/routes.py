@@ -83,9 +83,6 @@ def get_one_user(current_user, is_admin, public_id):
 
     logger.info('Obtenemos el usuario vía su public_id')
 
-    if not current_user.admin:
-        abort(403)
-
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
@@ -100,39 +97,12 @@ def get_one_user(current_user, is_admin, public_id):
     return jsonify({'user' : user_data})
 
 
-@user_bp.route('/list/<user_public_id>/todos', methods=['GET'])
-@token_required
-@admin_required
-def get_all_users_todos(currentuser, is_admin, public_id):
-    user = User.query.filter_by(public_id=user_public_id).first()
-   
-    user_data = {}
-    user_data['public_id'] = user.public_id
-    user_data['name'] = user.name
-    user_data['password'] = user.password
-    user_data['admin'] = user.admin
-    user_todos = []
-    for todo in user.todos:
-        user_todo = {}
-        user_todo['id'] = todo.id
-        user_todo['text'] = todo.text
-        user_todo['complete'] = todo.complete
-        user_todo['user_id'] = todo.user_id
-        user_todos.append(user_todo)
-    user_data['todos'] = user_todos
-
-    return jsonify({'user' : user_data})
-
-
 @user_bp.route('/create', methods=['POST'])
 @token_required
 @admin_required
 def create_user(current_user, is_admin):
 
     logger.info('Creamos el usuario')
-
-    if not current_user.admin:
-        abort(403)
 
     data = request.get_json()
 
@@ -151,9 +121,6 @@ def create_user(current_user, is_admin):
 def promote_user(current_user, is_admin, public_id):
 
     logger.info('Promocionamos a administrador al usuario indicado')
-
-    if not current_user.admin:
-        abort(403)
 
     user = User.query.filter_by(public_id=public_id).first()
 
@@ -176,9 +143,6 @@ def promote_user(current_user, is_admin, public_id):
 def delete_user(current_user, is_admin, public_id):
 
     logger.info('Eliminamos el usuario indicado')
-
-    if not current_user.admin:
-        abort(403)
 
     user = User.query.filter_by(public_id=public_id).first()
 
