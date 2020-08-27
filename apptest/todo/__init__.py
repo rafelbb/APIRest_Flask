@@ -2,5 +2,5 @@
 
 from flask import Blueprint
 
-todo_bp = Blueprint('todo', __name__)
+todo_bp = Blueprint('todo', __name__, url_prefix='/todos')
 from . import routes

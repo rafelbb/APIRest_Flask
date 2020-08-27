@@ -11,49 +11,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from apptest import db
 from apptest.models import Todo, User
-
+from apptest.auth.decorators import token_required
 from . import todo_bp
 
 
-
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-
-        if not token:
-            abort(400)
-
-        try: 
-            data = jwt.decode(token, current_app.config['SECRET_KEY'])
-            current_user = User.query.filter_by(public_id=data['public_id']).first()
-        except:
-            abort(401)
-
-        return f(current_user, *args, **kwargs)
-
-    return decorated
-
-@todo_bp.route('/login')
-def login():
-
-    auth = request.authorization
-    if not auth or not auth.username or not auth.password:
-        abort(400)
-
-    user = User.query.filter_by(name=auth.username).first()
-
-    if not user:
-        abort(401)
-
-    if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
-        return jsonify({'token' : token.decode('UTF-8')})
-
-    abort(401)
 
 @todo_bp.route('/todo', methods=['GET'])
 #@token_required

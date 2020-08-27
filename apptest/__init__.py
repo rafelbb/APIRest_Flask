@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from .extensions import db
 from .user import user_bp
 from .todo import todo_bp
+from .auth import auth_bp
 
 
 migrate = Migrate()
@@ -21,8 +22,8 @@ def create_app(settings_module):
 	#migrate.init_app(app, db)
 	migrate.init_app(app, db, render_as_batch=True) # sqlite no puede gestionar correctamente los ALTER, por lo que borramos todo y volvemos a crear (render_as_batch)
 	
-	#TODO: Crear un blueprint de autenticación: app.register_blueprint(auth_bp, url_prefix='/auth')
 	# Registro de los Blueprints
+	app.register_blueprint(auth_bp)
 	app.register_blueprint(user_bp)
 	app.register_blueprint(todo_bp)
 	

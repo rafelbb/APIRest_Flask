@@ -11,70 +11,27 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from apptest import db
+from apptest.auth.decorators import token_required, admin_required
 from apptest.models import User
 
 from . import user_bp
 
 logger = logging.getLogger(__name__)
 
-# TODO: Crear un paquete auth para el login y modelo de usuario. auth/models.py; auth/routes.py
-# TODO: Crear los decorator necesarios en una paquete separado auth/decorators.py;. Por ejemplo este de token_required y uno de admin_required
-
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-
-        if not token:
-            abort(400)
-
-        try: 
-            data = jwt.decode(token, current_app.config['SECRET_KEY'])
-            current_user = User.query.filter_by(public_id=data['public_id']).first()
-        except:
-            abort(401)
-
-        return f(current_user, *args, **kwargs)
-
-    return decorated
 
 
-@user_bp.route('/login')
-def login():
-
-    logger.info('Hacemos login del usuario para obtener el token de autenticación')
-
-    auth = request.authorization
-    if not auth or not auth.username or not auth.password:
-        abort(400)
-
-    user = User.query.filter_by(name=auth.username).first()
-
-    if not user:
-        abort(401)
-
-    if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
-        return jsonify({'token' : token.decode('UTF-8')})
-
-    abort(401)
-
-
-@user_bp.route('/user', methods=['GET'])
+@user_bp.route('/list', methods=['GET'])
 @token_required
-def get_all_users(current_user):
+@admin_required
+def get_all_users(current_user, is_admin):
 
     logger.info('Obtenemos todos los usuarios, sin paginar')
 
-    if not current_user.admin:
-        abort(403)
-
     users = User.query.all()
+
+    if not users:
+        abort(404)
     
-    # TODO: Verificar si la lista está vacia
     output = []
     for user in users:
         user_data = {}
@@ -87,14 +44,12 @@ def get_all_users(current_user):
     return jsonify({'users' : output})
 
 
-@user_bp.route('/userpaginated', methods=['GET'])
+@user_bp.route('/paginatedlist', methods=['GET'])
 @token_required
-def get_all_users_paginated(current_user):
+@admin_required
+def get_all_users_paginated(current_user, is_admin):
 
     logger.info('Obtenemos todos los usuarios, con paginado')
-
-    if not current_user.admin:
-        abort(403)
 
     if 'page' not in request.args or 'per_page' not in request.args:
         abort(400)
@@ -106,8 +61,6 @@ def get_all_users_paginated(current_user):
         abort(400)
 
     users = User.query.order_by(User.name.asc()).paginate(page=page, per_page=per_page, error_out=False)
-    
-    # TODO: Verificar si la lista está vacia
    
     # Creamos la lista con los resultados
     output = []
@@ -123,32 +76,10 @@ def get_all_users_paginated(current_user):
     return jsonify({'users' : output})
 
 
-@user_bp.route('/user/<user_public_id>/todos', methods=['GET'])
-@token_required
-def get_all_users_todos(currentuser, public_id):
-    user = User.query.filter_by(public_id=user_public_id).first()
-   
-    user_data = {}
-    user_data['public_id'] = user.public_id
-    user_data['name'] = user.name
-    user_data['password'] = user.password
-    user_data['admin'] = user.admin
-    user_todos = []
-    for todo in user.todos:
-        user_todo = {}
-        user_todo['id'] = todo.id
-        user_todo['text'] = todo.text
-        user_todo['complete'] = todo.complete
-        user_todo['user_id'] = todo.user_id
-        user_todos.append(user_todo)
-    user_data['todos'] = user_todos
-
-    return jsonify({'user' : user_data})
-
-
 @user_bp.route('/user/<public_id>', methods=['GET'])
 @token_required
-def get_one_user(current_user, public_id):
+@admin_required
+def get_one_user(current_user, is_admin, public_id):
 
     logger.info('Obtenemos el usuario vía su public_id')
 
@@ -169,9 +100,34 @@ def get_one_user(current_user, public_id):
     return jsonify({'user' : user_data})
 
 
-@user_bp.route('/user', methods=['POST'])
+@user_bp.route('/list/<user_public_id>/todos', methods=['GET'])
 @token_required
-def create_user(current_user):
+@admin_required
+def get_all_users_todos(currentuser, is_admin, public_id):
+    user = User.query.filter_by(public_id=user_public_id).first()
+   
+    user_data = {}
+    user_data['public_id'] = user.public_id
+    user_data['name'] = user.name
+    user_data['password'] = user.password
+    user_data['admin'] = user.admin
+    user_todos = []
+    for todo in user.todos:
+        user_todo = {}
+        user_todo['id'] = todo.id
+        user_todo['text'] = todo.text
+        user_todo['complete'] = todo.complete
+        user_todo['user_id'] = todo.user_id
+        user_todos.append(user_todo)
+    user_data['todos'] = user_todos
+
+    return jsonify({'user' : user_data})
+
+
+@user_bp.route('/create', methods=['POST'])
+@token_required
+@admin_required
+def create_user(current_user, is_admin):
 
     logger.info('Creamos el usuario')
 
@@ -189,9 +145,10 @@ def create_user(current_user):
     return jsonify({'message' : 'New user created!'})
 
 
-@user_bp.route('/user/<public_id>', methods=['PUT'])
+@user_bp.route('/promote/<public_id>', methods=['PUT'])
 @token_required
-def promote_user(current_user, public_id):
+@admin_required
+def promote_user(current_user, is_admin, public_id):
 
     logger.info('Promocionamos a administrador al usuario indicado')
 
@@ -205,7 +162,7 @@ def promote_user(current_user, public_id):
 
     if user.admin:
         # TODO: Devolver un mensaje estándar http como toca. Analizar que código hay que devolver
-        return jsonify({'message' : 'ya es admin!'})
+        return jsonify({'message' : 'El usuario ya es administrador'})
 
     user.admin = True
     db.session.commit()
@@ -213,10 +170,10 @@ def promote_user(current_user, public_id):
     return jsonify({'message' : 'The user has been promoted!'})
 
 
-@user_bp.route('/user/<public_id>', methods=['DELETE'])
+@user_bp.route('/delete/<public_id>', methods=['DELETE'])
 @token_required
-#@admin_required
-def delete_user(current_user, public_id):
+@admin_required
+def delete_user(current_user, is_admin, public_id):
 
     logger.info('Eliminamos el usuario indicado')
 
