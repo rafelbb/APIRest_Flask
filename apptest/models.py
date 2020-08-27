@@ -11,7 +11,7 @@ class User(db.Model):
     name = db.Column(db.String(50))
     password = db.Column(db.String(80))
     admin = db.Column(db.Boolean)
-    todos = db.relationship('Todo')
+    todos = db.relationship('Todo', backref='user', lazy='dynamic')
 
 class Todo(db.Model):
     __tablename__ = 'tbl_todos'

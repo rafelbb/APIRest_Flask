@@ -73,12 +73,9 @@ def get_all_users(current_user):
         abort(403)
 
     users = User.query.all()
-   
-    # TODO: Verificar si la lista está vacia. if not users: abort(404)
-   
-    # Creamos la lista con los resultados
+    
+    # TODO: Verificar si la lista está vacia
     output = []
-    # Rellenamos la lista de resultados en base a diccionarios de dastos
     for user in users:
         user_data = {}
         user_data['public_id'] = user.public_id
@@ -124,6 +121,29 @@ def get_all_users_paginated(current_user):
         output.append(user_data)
     
     return jsonify({'users' : output})
+
+
+@user_bp.route('/user/<user_public_id>/todos', methods=['GET'])
+@token_required
+def get_all_users_todos(currentuser, public_id):
+    user = User.query.filter_by(public_id=user_public_id).first()
+   
+    user_data = {}
+    user_data['public_id'] = user.public_id
+    user_data['name'] = user.name
+    user_data['password'] = user.password
+    user_data['admin'] = user.admin
+    user_todos = []
+    for todo in user.todos:
+        user_todo = {}
+        user_todo['id'] = todo.id
+        user_todo['text'] = todo.text
+        user_todo['complete'] = todo.complete
+        user_todo['user_id'] = todo.user_id
+        user_todos.append(user_todo)
+    user_data['todos'] = user_todos
+
+    return jsonify({'user' : user_data})
 
 
 @user_bp.route('/user/<public_id>', methods=['GET'])
