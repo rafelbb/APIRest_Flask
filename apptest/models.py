@@ -1,6 +1,10 @@
 # APIRest_Flask\apptest\models.py
 
+import uuid
+import datetime
+from werkzeug.security import generate_password_hash
 from .extensions import db
+
 
 
 roles_users = db.Table(
@@ -10,6 +14,16 @@ roles_users = db.Table(
 
 
 class User(db.Model):
+
+    def __init__(self, email, name, password):
+        self.public_id = str(uuid.uuid4())
+        self.email = email
+        self.name = name
+        self.password = generate_password_hash(password, method='sha256')
+        self.active = True
+        self.confirmed_at = datetime.datetime.utcnow()
+        self.admin = False
+
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(255), unique=True)
@@ -29,7 +43,6 @@ class Role(db.Model):
 
 
 class Todo(db.Model):
-    __tablename__ = 'tbl_todos'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(50))
     complete = db.Column(db.Boolean)

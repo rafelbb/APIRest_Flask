@@ -3,7 +3,6 @@
 import logging
 from apptest.user.service import User_service
 from apptest.auth.decorators import admin_required, token_required
-
 from . import user_bp
 
 

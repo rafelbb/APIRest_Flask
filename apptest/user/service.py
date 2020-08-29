@@ -1,10 +1,17 @@
 # APIRest_Flask\apptest\user\service.py
 
-import uuid
 from flask import abort, jsonify, request
-from werkzeug.security import generate_password_hash
-
+from marshmallow import Schema, ValidationError, fields
+from apptest.extensions import db
 from apptest.models import Todo, User
+
+
+class UserSchema(Schema):
+    email = fields.Email()
+    name = fields.String(required=True)
+    password = fields.String(required=True)
+
+
 
 class User_service:
 
@@ -100,13 +107,18 @@ class User_service:
 
         return jsonify({'todo' : todo_data})
 
+
     def save_user(self):
 
-        data = request.get_json()
+        request_data = request.get_json()
+        
+        try:
+            UserSchema().load(request_data)
+        #except ValidationError as err:
+        except ValidationError:
+            abort(400)
 
-        hashed_password = generate_password_hash(data['password'], method='sha256')
-
-        new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False)
+        new_user = User(email = request_data['email'], name=request_data['name'], password=request_data['password'])
         db.session.add(new_user)
         db.session.commit()
 
