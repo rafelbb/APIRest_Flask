@@ -25,7 +25,9 @@ class User_service:
         output = []
         for role in roles:
             roles_data = {}
+            roles_data['id'] = role.id
             roles_data['name'] = role.name
+            roles_data['description'] = role.description
             output.append(roles_data)
         
         return jsonify({'roles' : output})
@@ -33,7 +35,6 @@ class User_service:
 
     def find_role_users(self, role_id):
 
-        #roles = Role.query.filter(Role.users.any(id=user_id)).all()
         users = User.query.filter(User.roles.any(id=role_id)).all()
 
         if not users:
@@ -43,6 +44,9 @@ class User_service:
         for user in users:
             user_data = {}
             user_data['name'] = user.name
+            user_data['public_id'] = user.public_id
+            user_data['email'] = user.email
+            user_data['active'] = user.active
             output.append(user_data)
         
         return jsonify({'users' : output})
