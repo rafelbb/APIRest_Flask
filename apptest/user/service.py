@@ -3,17 +3,49 @@
 from flask import abort, jsonify, request
 from marshmallow import Schema, ValidationError, fields
 from apptest.extensions import db
-from apptest.models import Todo, User
+from apptest.models import Todo, User, Role
 
 
 class UserSchema(Schema):
-    email = fields.Email()
+    email = fields.Email(required=True)
     name = fields.String(required=True)
     password = fields.String(required=True)
 
 
 
 class User_service:
+
+    def find_user_roles(self, user_id):
+        
+        roles = Role.query.filter(Role.users.any(id=user_id)).all()
+
+        if not roles:
+            abort(404)
+
+        output = []
+        for role in roles:
+            roles_data = {}
+            roles_data['name'] = role.name
+            output.append(roles_data)
+        
+        return jsonify({'roles' : output})
+
+
+    def find_role_users(self, role_id):
+
+        #roles = Role.query.filter(Role.users.any(id=user_id)).all()
+        users = User.query.filter(User.roles.any(id=role_id)).all()
+
+        if not users:
+            abort(404)
+
+        output = []
+        for user in users:
+            user_data = {}
+            user_data['name'] = user.name
+            output.append(user_data)
+        
+        return jsonify({'users' : output})
 
     def find_all_users(self):
 

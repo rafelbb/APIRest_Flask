@@ -10,8 +10,21 @@ from . import user_bp
 logger = logging.getLogger(__name__)
 user_service = User_service()
 
+@user_bp.route('/user/<user_id>/roles', methods=['GET'])
+def get_user_roles(user_id):
+    
+    logger.info('Obtenemos todos los roles de un usuario')
+    return user_service.find_user_roles(user_id)
+
+@user_bp.route('/role/<role_id>/users', methods=['GET'])
+def get_role_users(role_id):
+    
+    logger.info('Obtenemos todos los usuarios de un role')
+    return user_service.find_role_users(role_id)
+
 @user_bp.route('/list', methods=['GET'])
 @token_required
+@admin_required
 def get_all_users():
 
     logger.info('Obtenemos todos los usuarios, sin paginar')

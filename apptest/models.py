@@ -31,15 +31,17 @@ class User(db.Model):
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
+    #TODO: Eiminar la propiedad 'admin' al ser sustituida por el rol 'admin'
     admin = db.Column(db.Boolean)
     todos = db.relationship('Todo', backref='user', lazy='dynamic')
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users'))
 
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique = True)
     description = db.Column(db.String(255))
+    other_description = db.Column(db.String(255))
 
 
 class Todo(db.Model):
