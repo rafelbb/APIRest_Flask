@@ -13,7 +13,7 @@ load_dotenv(path.join(basedir, '.env'))
 APP_ENV = APP_ENV_PRODUCTION
 
 # Database configuration
-SQLALCHEMY_DATABASE_URI = 'sqlite:///db.sqlite'
+SQLALCHEMY_DATABASE_URI = 'postgresql://apirest:1234@localhost:5432/gestion'
 SQLALCHEMY_ECHO = False
 
 
