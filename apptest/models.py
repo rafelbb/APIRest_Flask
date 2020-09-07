@@ -15,14 +15,14 @@ roles_users = db.Table(
 
 class User(db.Model):
 
-    def __init__(self, email, name, password):
+    def __init__(self, email, name, password, active=True, admin=False):
         self.public_id = str(uuid.uuid4())
         self.email = email
         self.name = name
         self.password = generate_password_hash(password, method='sha256')
-        self.active = True
+        self.active = active
         self.confirmed_at = datetime.datetime.utcnow()
-        self.admin = False
+        self.admin = admin
 
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique=True)

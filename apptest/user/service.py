@@ -62,6 +62,7 @@ class User_service:
             user_data['public_id'] = user.public_id
             user_data['name'] = user.name
             user_data['password'] = user.password
+            user_data['email'] = user.email
             user_data['admin'] = user.admin
             output.append(user_data)
 
