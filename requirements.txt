@@ -5,3 +5,4 @@ SQLAlchemy
 Werkzeug
 PyJWT
 marshmallow
+psycopg2

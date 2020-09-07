@@ -36,16 +36,47 @@ class User(db.Model):
     todos = db.relationship('Todo', backref='user', lazy='dynamic')
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users'))
 
+    def __repr__(self):
+        return "User ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(self.public_id, self.email, self.name, self.password, 
+                                                                        self.active, self.confirmed_at, self.admin)
+
+    def __str__(self):
+        return '{} {}'.format(self.public_id, self.email, self.name, self.active, self.confirmed_at, self.admin)
+
 
 class Role(db.Model):
+
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique = True)
     description = db.Column(db.String(255))
     other_description = db.Column(db.String(255))
 
+    def __repr__(self):
+        return "Role('{}', '{}')".format(self.name, self.description)
+
+    def __str__(self):
+        return '{} {}'.format(self.name, self.description)
+
 
 class Todo(db.Model):
+
+    def __init__(self, text, complete, user_id):
+        self.text = text
+        self.complete = complete
+        self.user_id = user_id
+
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(50))
     complete = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return "Todo('{}', '{}', '{}')".format(self.text, self.complete, self.user_id)
+    
+    def __str__(self):
+        return '{} {} {}'.format(self.text, self.complete, self.user_id)
+

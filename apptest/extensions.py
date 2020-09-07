@@ -2,8 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
 
-
-# Esta chapuza es por usar sqlite, que no genera nombres para ix:index, up:uniquekey, ck:check, fk:foreignkey, pk:primarykey. 
+# Definimos la nomenclatura de los elementos de la base de datos
+# Importante para sqlite, que no genera nombres para ix:index, up:uniquekey, ck:check, fk:foreignkey, pk:primarykey. 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
     "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -13,4 +13,3 @@ naming_convention = {
 }
 
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
-#db = SQLAlchemy()

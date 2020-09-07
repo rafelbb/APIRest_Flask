@@ -6,28 +6,31 @@ from apptest.auth.decorators import admin_required, token_required
 from . import user_bp
 
 
-
 logger = logging.getLogger(__name__)
 user_service = User_service()
 
-@user_bp.route('/user/<user_id>/roles', methods=['GET'])
+
+@user_bp.route('/user/<user_id>/roles', methods=["GET"])
+@token_required
 def get_user_roles(user_id):
-    
+
     logger.info('Obtenemos todos los roles de un usuario')
     return user_service.find_user_roles(user_id)
 
+
 @user_bp.route('/role/<role_id>/users', methods=['GET'])
+@token_required
 def get_role_users(role_id):
-    
+
     logger.info('Obtenemos todos los usuarios de un role')
     return user_service.find_role_users(role_id)
 
+
 @user_bp.route('/list', methods=['GET'])
 @token_required
-@admin_required
 def get_all_users():
 
-    logger.info('Obtenemos todos los usuarios, sin paginar')
+    logger.info("Obtenemos todos los usuarios, sin paginar")
     return user_service.find_all_users()
 
 
@@ -55,14 +58,14 @@ def get_user_todos(user_id):
 
     logger.info('Obtenemos los todo del usuario')
     return user_service.find_user_todos(user_id)
-    
+
 
 @user_bp.route('/user/<user_id>/todo/<todo_id>', methods=['GET'])
 @token_required
 def get_user_todo(user_id, todo_id):
-    
+
     # TODO: La referencia al usuario debe ser vía el id público
-    
+
     logger.info('Obtenemos un todo del usuario')
     return user_service.find_user_todo(user_id, todo_id)
 
@@ -93,7 +96,6 @@ def promote_user(public_id):
 
     logger.info('Promocionamos a administrador al usuario indicado')
     return user_service.save_promote_user(public_id)
-    
 
 
 @user_bp.route('/delete/<public_id>', methods=['DELETE'])
@@ -103,5 +105,3 @@ def delete_user(public_id):
 
     logger.info('Eliminamos el usuario indicado')
     return user_service.delete(public_id)
-    
-

@@ -1,4 +1,4 @@
-# APIRest_securizada_bdd_blueprints\apptest\__init__.py
+# APIRest_Flask\apptest\__init__.py
 
 import logging
 from flask import Flask, jsonify, make_response
@@ -19,8 +19,8 @@ def create_app(settings_module):
 	# 
 	db.init_app(app)
 
-	#migrate.init_app(app, db)
-	migrate.init_app(app, db, render_as_batch=True) # sqlite no puede gestionar correctamente los ALTER, por lo que borramos todo y volvemos a crear (render_as_batch)
+	migrate.init_app(app, db)
+	#migrate.init_app(app, db, render_as_batch=True) # sqlite no puede gestionar correctamente los ALTER, por lo que borramos todo y volvemos a crear (render_as_batch)
 	
 	# Registro de los Blueprints
 	app.register_blueprint(auth_bp)
@@ -90,7 +90,7 @@ def configure_logging(app):
             l.addHandler(handler)
         l.propagate = False
 		# TODO: Averiguar si esta linea es necesario o no, ya la configuración del nivel del logger va en función del entorno 
-        #l.setLevel(logging.DEBUG)
+        l.setLevel(logging.DEBUG)
 
 
 def verbose_formatter():

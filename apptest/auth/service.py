@@ -11,22 +11,30 @@ from apptest.models import User
 from . import auth_bp
 
 
-
 class Auth_sevice:
-    
+
     def login_user(self):
+        """
+        Si se utiliza el esquema de la autenticación "Basic", las credenciales son construidas de esta forma:
+            - El usuario y la contraseña se combinan con dos puntos (aladdin:opensesame).
+            - El string resultante está basado en la codificación base64 (YWxhZGRpbjpvcGVuc2VzYW1l).
+            - Nota: ¡La codificación Base64 no es equivalente a encriptación o hashing! Este método es igual de seguro a enviar 
+                     las credenciales en un archivo plano de texto (la codificación base64 es reversible). 
+                     Lo recomendable es utilizar HTTPS en conjunto a la autenticación básica.
+        """
         auth = request.authorization
-    
+
         if not auth or not auth.username or not auth.password:
             abort(400)
-        
+
         user = User.query.filter_by(name=auth.username).first()
 
         if not user:
-            abort(401)
+            abort(404)
 
         if check_password_hash(user.password, auth.password):
-            token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=current_app.config['APP_TOKEN_LIFE_TIME'])}, current_app.config['SECRET_KEY'])
-            return jsonify({'token' : token.decode('UTF-8')})
+            token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow(
+            ) + datetime.timedelta(minutes=current_app.config['APP_TOKEN_LIFE_TIME'])}, current_app.config['SECRET_KEY'])
+            return jsonify({'token': token.decode('UTF-8')})
 
         abort(401)
