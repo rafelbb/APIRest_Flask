@@ -29,7 +29,7 @@ class Auth_sevice:
 
         user = User.query.filter_by(name=auth.username).first()
 
-        if not user:
+        if not user or not user.active:
             abort(404)
 
         if check_password_hash(user.password, auth.password):
