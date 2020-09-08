@@ -14,14 +14,7 @@ from . import auth_bp
 class Auth_sevice:
 
     def login_user(self):
-        """
-        Si se utiliza el esquema de la autenticación "Basic", las credenciales son construidas de esta forma:
-            - El usuario y la contraseña se combinan con dos puntos (aladdin:opensesame).
-            - El string resultante está basado en la codificación base64 (YWxhZGRpbjpvcGVuc2VzYW1l).
-            - Nota: ¡La codificación Base64 no es equivalente a encriptación o hashing! Este método es igual de seguro a enviar 
-                     las credenciales en un archivo plano de texto (la codificación base64 es reversible). 
-                     Lo recomendable es utilizar HTTPS en conjunto a la autenticación básica.
-        """
+        
         auth = request.authorization
 
         if not auth or not auth.username or not auth.password:
