@@ -6,3 +6,4 @@ Werkzeug
 PyJWT
 marshmallow
 psycopg2
+gunicorn
