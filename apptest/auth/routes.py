@@ -13,6 +13,5 @@ auth_service = Auth_sevice()
 @auth_bp.route('/login', methods=['GET'])
 def login():
 
-    logger.info(
-        'Hacemos login del usuario para obtener el token de autenticación')
+    logger.info('Login del usuario para obtener el token de autenticación')
     return auth_service.login_user()

@@ -2,6 +2,7 @@
 
 import uuid
 import datetime
+from flask import current_app
 from werkzeug.security import generate_password_hash
 from .extensions import db
 
@@ -19,7 +20,7 @@ class User(db.Model):
         self.public_id = str(uuid.uuid4())
         self.email = email
         self.name = name
-        self.password = generate_password_hash(password, method='sha256')
+        self.password = generate_password_hash(password, method=current_app.config['PWD_HASH_METHOD'])
         self.active = active
         self.confirmed_at = datetime.datetime.utcnow()
         self.admin = admin

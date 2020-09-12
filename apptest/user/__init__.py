@@ -1,4 +1,4 @@
-# APIRest_securizada_bdd_blueprints\apptest\user\__init__.py
+# APIRest_Flask\apptest\user\__init__.py
 
 from flask import Blueprint
 

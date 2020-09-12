@@ -12,8 +12,6 @@ from apptest.models import Role, User
 
 from . import auth_bp
 
-
-
 logger = logging.getLogger(__name__)
 
 def token_required(f):

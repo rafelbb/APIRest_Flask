@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_caching import Cache
+from flask_migrate import Migrate
 from sqlalchemy import MetaData
 
 
@@ -13,3 +15,6 @@ naming_convention = {
 }
 
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
+migrate = Migrate()
+cache = Cache()
+

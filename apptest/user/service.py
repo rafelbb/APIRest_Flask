@@ -1,6 +1,6 @@
 # APIRest_Flask\apptest\user\service.py
 
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, make_response
 from marshmallow import Schema, ValidationError, fields
 from apptest.extensions import db
 from apptest.models import Todo, User, Role
