@@ -46,7 +46,7 @@ def get_all_users_paginated():
 
 
 @user_bp.route('/user/<public_id>', methods=['GET'])
-@token_required
+#@token_required
 def get_one_user(public_id):
 
     logger.info('Obtenemos el usuario vía su public_id')
