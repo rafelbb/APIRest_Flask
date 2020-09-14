@@ -74,8 +74,8 @@ def get_user_todo(user_id, todo_id):
 
 
 @user_bp.route('/create', methods=['POST'])
-@token_required
-@admin_required
+#@token_required
+#@admin_required
 def create_user():
 
     logger.info('Creamos el usuario')
@@ -93,8 +93,8 @@ def create_user_todo(user_id):
 
 
 @user_bp.route('/user/<public_id>/promote', methods=['PUT'])
-@token_required
-@admin_required
+#@token_required
+#@admin_required
 def promote_user(public_id):
 
     logger.info('Promocionamos a administrador al usuario indicado')
