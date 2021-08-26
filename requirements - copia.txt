@@ -1,7 +1,7 @@
 Flask - 123123123123
 Flask-SQLAlchemy - 222222222
 Flask-Migrate - 333333333
-SQLAlchemy
+SQLAlchemy - 4444444444
 Werkzeug
 PyJWT
 marshmallow
