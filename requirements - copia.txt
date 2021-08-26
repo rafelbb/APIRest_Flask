@@ -7,5 +7,15 @@ PyJWT
 marshmallow
 psycopg2
 gunicorn
+123456789
+123456789
+123456789
+123456789
+123456789
+
+
+
+
+
 
 
