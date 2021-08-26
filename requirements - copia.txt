@@ -1,6 +1,6 @@
 Flask - 123123123123
 Flask-SQLAlchemy - 222222222
-Flask-Migrate
+Flask-Migrate - 333333333
 SQLAlchemy
 Werkzeug
 PyJWT
