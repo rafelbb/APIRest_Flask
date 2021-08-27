@@ -1,9 +1,0 @@
-Flask - 123123123123
-Flask-SQLAlchemy - 222222222
-Flask-Migrate - 333333333
-SQLAlchemy - 4444444444
-Werkzeug - 555555555555
-PyJWT
-marshmallow
-psycopg2
-gunicorn
