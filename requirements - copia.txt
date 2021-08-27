@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+SQLAlchemy
+Werkzeug
+PyJWT
+marshmallow
+psycopg2
+gunicorn
+111111111111
